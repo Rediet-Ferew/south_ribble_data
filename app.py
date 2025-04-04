@@ -10,6 +10,7 @@ app = Dash(
     suppress_callback_exceptions=True,
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
+server = app.server
 
 app.layout = html.Div([
     dcc.Location(id="url", refresh=False),
