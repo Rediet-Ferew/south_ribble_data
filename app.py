@@ -11,6 +11,13 @@ app = Dash(
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 server = app.server
+@server.route("/")
+def home():
+    return app.index()
+
+@server.route("/<path:path>")  # Catch-all route for client-side paths
+def serve_all(path):
+    return app.index()
 
 app.layout = html.Div([
     dcc.Location(id="url", refresh=False),
