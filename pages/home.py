@@ -11,7 +11,7 @@ layout = html.Div([
             html.Li("Click WEEKLY for weekly metrics"),
             html.Li("Click MONTHLY for monthly trends")
         ]),
-        html.P("💾 Remember to upload your CSV files using the upload button"),
+        html.P("💾 Remember to upload your CSV files using the upload button (if implemented)"),
         html.P("🔍 Data updates may take a few moments to process")
     ], style={
         'max-width': '800px',
