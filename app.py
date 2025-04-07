@@ -12,13 +12,13 @@ app = Dash(
 server = app.server
 
 # Flask routes
-@server.route("/")
-def home():
-    return app.index()
+# @server.route("/")
+# def home():
+#     return app.index()
 
-@server.route("/<path:path>")
-def serve_all(path):
-    return app.index()
+# @server.route("/<path:path>")
+# def serve_all(path):
+#     return app.index()
 
 app.layout = html.Div([
     dcc.Location(id="url", refresh=False),
