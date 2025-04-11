@@ -71,49 +71,60 @@ def clean_and_merge_data(contents_list):
     return df_cleaned
 
 
+import pandas as pd
+import os
+import json
+from datetime import datetime
+
+DATE_FORMAT = '%Y-%m-%d'  # Enforce this format for consistency
+
 def weekly_breakdown(df):
-    # Ensure date is datetime and sort
-    df['job_date'] = pd.to_datetime(df['job_date'], errors='coerce')
+    # Ensure job_date is parsed correctly and sorted
+    df['job_date'] = pd.to_datetime(df['job_date'], format=DATE_FORMAT, errors='coerce')
     df = df.sort_values('job_date')
 
     # Filter out dates before first Monday (2023-01-02)
     df = df[df['job_date'] >= pd.to_datetime('2023-01-02')]
 
-    # Load existing first visit data from JSON
+    # Load existing first visit data
     if os.path.exists(FIRST_VISIT_DATES):
-        with open(FIRST_VISIT_DATES, 'r') as f:
+        with open(FIRST_VISIT_DATES, 'r', encoding='utf-8') as f:
             first_visit_data = json.load(f)
     else:
         first_visit_data = []
 
-    # Convert to lookup dict
-    json_lookup = {
-        entry['phone'].strip(): pd.to_datetime(entry['first_visit_date'])
-        for entry in first_visit_data
-    }
+    # Convert JSON to dict with strict date parsing
+    json_lookup = {}
+    for entry in first_visit_data:
+        try:
+            date_obj = pd.to_datetime(entry['first_visit_date'], format=DATE_FORMAT, errors='raise')
+            json_lookup[entry['phone'].strip()] = date_obj
+        except Exception as e:
+            raise ValueError(f"Invalid date format in JSON for phone {entry['phone']}: {entry['first_visit_date']}")
 
     new_entries = []
 
-    # Compute first visit per phone from DataFrame
+    # Find earliest job date per phone
     phone_min_dates = df.groupby('phone')['job_date'].min().reset_index()
     phone_min_dates.columns = ['phone', 'df_first_visit']
 
-    # Determine actual first visit date using JSON or fallback
+    # Resolve first visit using lookup or add new
     def resolve_first_visit(row):
         phone = row['phone'].strip()
         if phone in json_lookup:
             return json_lookup[phone]
         else:
+            # Add in the correct format
             new_entries.append({
                 'phone': phone,
-                'first_visit_date': row['df_first_visit'].strftime('%Y-%m-%d')
+                'first_visit_date': row['df_first_visit'].strftime(DATE_FORMAT)
             })
             return row['df_first_visit']
 
     phone_min_dates['first_visit_date'] = phone_min_dates.apply(resolve_first_visit, axis=1)
     df = pd.merge(df, phone_min_dates[['phone', 'first_visit_date']], on='phone', how='left')
 
-    # Create week labels
+    # Create weekly bins
     start_date = df['job_date'].min()
     end_date = df['job_date'].max()
     week_starts = pd.date_range(start=start_date, end=end_date, freq='W-MON')
@@ -121,7 +132,6 @@ def weekly_breakdown(df):
 
     week_labels = [f"{s.strftime('%b %d, %Y')} - {e.strftime('%b %d, %Y')}" for s, e in zip(week_starts, week_ends)]
 
-    # Bucket job_date and first_visit_date into weeks
     df['week_start'] = pd.cut(
         df['job_date'],
         bins=[start_date - pd.Timedelta(days=1)] + list(week_starts[1:]) + [end_date + pd.Timedelta(days=1)],
@@ -137,7 +147,7 @@ def weekly_breakdown(df):
         right=False
     )
 
-    # Weekly breakdown logic
+    # Weekly analysis
     weekly_results = []
     for week in sorted(df['week_label'].dropna().unique(), key=lambda x: week_labels.index(x)):
         week_data = df[df['week_label'] == week]
@@ -146,8 +156,8 @@ def weekly_breakdown(df):
         new_customers = week_data[week_data['week_label'] == week_data['first_visit_week']]['phone'].nunique()
         returning_customers = total_customers - new_customers
 
-        new_percentage = round((new_customers / total_customers * 100), 2) if total_customers > 0 else 0
-        returning_percentage = round((returning_customers / total_customers * 100), 2) if total_customers > 0 else 0
+        new_percentage = round((new_customers / total_customers * 100), 2) if total_customers else 0
+        returning_percentage = round((returning_customers / total_customers * 100), 2) if total_customers else 0
 
         total_revenue = week_data['price'].sum()
         new_revenue = week_data[week_data['week_label'] == week_data['first_visit_week']]['price'].sum()
@@ -167,15 +177,16 @@ def weekly_breakdown(df):
 
     weekly_df = pd.DataFrame(weekly_results)
 
-    # Save new first visits
+    # Append validated new entries to JSON
     if new_entries:
         updated_json = first_visit_data + new_entries
-        with open(FIRST_VISIT_DATES, 'w') as f:
+        with open(FIRST_VISIT_DATES, 'w', encoding='utf-8') as f:
             json.dump(updated_json, f, indent=4)
 
     return {
         'weekly_breakdown': weekly_df
     }
+
 
 def generate_visuals(df):
     # Create a copy to avoid modifying original data

@@ -79,6 +79,12 @@ def clean_and_merge_data(contents_list):
     return df_cleaned
 
 
+def safe_parse_date(date_str):
+    try:
+        return pd.to_datetime(date_str, format='%Y-%m-%d', errors='coerce')
+    except Exception:
+        return pd.NaT
+
 def monthly_breakdown(df):
     # Ensure job_date is datetime
     df['job_date'] = pd.to_datetime(df['job_date'], errors='coerce')
@@ -93,7 +99,7 @@ def monthly_breakdown(df):
 
     # Convert existing JSON data into a dict for quick access
     json_lookup = {
-        entry['phone'].strip(): pd.to_datetime(entry['first_visit_date'])
+        entry['phone'].strip(): safe_parse_date(entry['first_visit_date'])
         for entry in first_visit_data
     }
 
@@ -106,14 +112,16 @@ def monthly_breakdown(df):
     # Determine actual first visit date using JSON or fallback
     def resolve_first_visit(row):
         phone = row['phone'].strip()
-        if phone in json_lookup:
+        if phone in json_lookup and pd.notna(json_lookup[phone]):
             return json_lookup[phone]
         else:
             # Add to new entries to update JSON later
-            new_entries.append({
-                'phone': phone,
-                'first_visit_date': row['df_first_visit'].strftime('%Y-%m-%d')
-            })
+            visit_date_str = row['df_first_visit'].strftime('%Y-%m-%d') if pd.notna(row['df_first_visit']) else None
+            if visit_date_str:
+                new_entries.append({
+                    'phone': phone,
+                    'first_visit_date': visit_date_str
+                })
             return row['df_first_visit']
 
     phone_min_dates['first_visit_date'] = phone_min_dates.apply(resolve_first_visit, axis=1)
@@ -167,9 +175,11 @@ def monthly_breakdown(df):
 
     advanced_ltv = avg_purchase_value * avg_purchase_frequency * avg_customer_lifespan
 
-    # Append new entries to the JSON and save
+    # Append new entries to the JSON and save (avoiding duplicates)
     if new_entries:
-        updated_json = first_visit_data + new_entries
+        # Merge with existing but avoid duplicates
+        existing_phones = {entry['phone'] for entry in first_visit_data}
+        updated_json = first_visit_data + [entry for entry in new_entries if entry['phone'] not in existing_phones]
         with open(FIRST_VISIT_DATES, 'w') as f:
             json.dump(updated_json, f, indent=4)
 
