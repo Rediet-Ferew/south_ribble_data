@@ -9,12 +9,13 @@ import os
 from dash.dependencies import Input, Output, State
 import time
 from dash import dcc, html, dash_table, Input, Output, callback
+from dash.exceptions import PreventUpdate
 
 dash.register_page(__name__, path="/weekly", name="Weekly Data")
 
 # Define file path for storing processed data
 PROCESSED_DATA_FILE = os.path.join(os.getcwd(), "assets", "weekly_output_data.json")
-
+FIRST_VISIT_DATES = os.path.join(os.getcwd(), "assets", "first_visits_string.json")
 
 def load_processed_data():
     if os.path.exists(PROCESSED_DATA_FILE):
@@ -71,7 +72,6 @@ def clean_and_merge_data(contents_list):
 
 
 def weekly_breakdown(df):
-
     # Ensure date is datetime and sort
     df['job_date'] = pd.to_datetime(df['job_date'], errors='coerce')
     df = df.sort_values('job_date')
@@ -79,15 +79,49 @@ def weekly_breakdown(df):
     # Filter out dates before first Monday (2023-01-02)
     df = df[df['job_date'] >= pd.to_datetime('2023-01-02')]
 
-    # Assign week buckets starting from each Monday
+    # Load existing first visit data from JSON
+    if os.path.exists(FIRST_VISIT_DATES):
+        with open(FIRST_VISIT_DATES, 'r') as f:
+            first_visit_data = json.load(f)
+    else:
+        first_visit_data = []
+
+    # Convert to lookup dict
+    json_lookup = {
+        entry['phone'].strip(): pd.to_datetime(entry['first_visit_date'])
+        for entry in first_visit_data
+    }
+
+    new_entries = []
+
+    # Compute first visit per phone from DataFrame
+    phone_min_dates = df.groupby('phone')['job_date'].min().reset_index()
+    phone_min_dates.columns = ['phone', 'df_first_visit']
+
+    # Determine actual first visit date using JSON or fallback
+    def resolve_first_visit(row):
+        phone = row['phone'].strip()
+        if phone in json_lookup:
+            return json_lookup[phone]
+        else:
+            new_entries.append({
+                'phone': phone,
+                'first_visit_date': row['df_first_visit'].strftime('%Y-%m-%d')
+            })
+            return row['df_first_visit']
+
+    phone_min_dates['first_visit_date'] = phone_min_dates.apply(resolve_first_visit, axis=1)
+    df = pd.merge(df, phone_min_dates[['phone', 'first_visit_date']], on='phone', how='left')
+
+    # Create week labels
     start_date = df['job_date'].min()
     end_date = df['job_date'].max()
-
     week_starts = pd.date_range(start=start_date, end=end_date, freq='W-MON')
     week_ends = week_starts + pd.Timedelta(days=6)
 
     week_labels = [f"{s.strftime('%b %d, %Y')} - {e.strftime('%b %d, %Y')}" for s, e in zip(week_starts, week_ends)]
 
+    # Bucket job_date and first_visit_date into weeks
     df['week_start'] = pd.cut(
         df['job_date'],
         bins=[start_date - pd.Timedelta(days=1)] + list(week_starts[1:]) + [end_date + pd.Timedelta(days=1)],
@@ -96,21 +130,15 @@ def weekly_breakdown(df):
     )
     df['week_label'] = df['week_start']
 
-    # Identify first visit week per customer
-    first_visits = df.groupby('phone')['job_date'].min().reset_index()
-    first_visits.columns = ['phone', 'first_visit_date']
-    df = df.merge(first_visits, on='phone', how='left')
-
-    first_visits['first_visit_week'] = pd.cut(
-        first_visits['first_visit_date'],
+    df['first_visit_week'] = pd.cut(
+        df['first_visit_date'],
         bins=[start_date - pd.Timedelta(days=1)] + list(week_starts[1:]) + [end_date + pd.Timedelta(days=1)],
         labels=week_labels,
         right=False
     )
-    df = df.merge(first_visits[['phone', 'first_visit_week']], on='phone', how='left')
 
+    # Weekly breakdown logic
     weekly_results = []
-
     for week in sorted(df['week_label'].dropna().unique(), key=lambda x: week_labels.index(x)):
         week_data = df[df['week_label'] == week]
 
@@ -139,19 +167,27 @@ def weekly_breakdown(df):
 
     weekly_df = pd.DataFrame(weekly_results)
 
-    
+    # Save new first visits
+    if new_entries:
+        updated_json = first_visit_data + new_entries
+        with open(FIRST_VISIT_DATES, 'w') as f:
+            json.dump(updated_json, f, indent=4)
+
     return {
-        'weekly_breakdown': weekly_df,
-        
+        'weekly_breakdown': weekly_df
     }
 
-
 def generate_visuals(df):
-    # Increase figure size and adjust layout
+    # Create a copy to avoid modifying original data
+    df_display = df.copy()
+    
+    # Add delete button column
+    df_display['delete'] = '❌'  # Use lowercase 'delete' for column ID
+    
+    # Create figures
     fig_line = px.line(df, x='week', y=['new_customers', 'returning_customers'], markers=True)
     fig_line.update_layout(width=2000, height=500, margin={"r": 20, "t": 20, "l": 20, "b": 50})
 
-    # Increase bar width and ensure bars are not too thin
     fig_bar = px.bar(
         df,
         x='week',
@@ -166,17 +202,37 @@ def generate_visuals(df):
         xaxis=dict(tickangle=45),
     )
 
+    # Define columns with proper delete button configuration
+    columns = [
+        {"name": col, "id": col} 
+        for col in df.columns if col != 'delete'
+    ] + [
+        {
+            "name": "Delete",
+            "id": "delete",
+            "presentation": "markdown",
+            "type": "text",
+            "deletable": False
+        }
+    ]
+
     return html.Div([
         html.H2("📊 Data Table"),
         dash_table.DataTable(
-            columns=[{"name": col, "id": col} for col in df.columns],
-            data=df.round(2).to_dict('records'),
-            style_table={'overflowX': 'auto'}
+            id='weekly-data-table',  # Add this ID
+            columns=columns,
+            data=df_display.round(2).to_dict('records'),
+            style_table={'overflowX': 'auto'},
+            style_cell_conditional=[
+                {
+                    'if': {'column_id': 'delete'},
+                    'textAlign': 'center',
+                    'width': '100px'
+                }
+            ],
         ),
         html.H2("📈 Weekly Trends"),
-
         dcc.Graph(figure=fig_line),
-
         html.Div(
             dcc.Graph(figure=fig_bar),
             style={'overflowX': 'scroll', 'width': '100%', 'whiteSpace': 'nowrap'}
@@ -224,7 +280,7 @@ def unified_callback(contents, pathname, stored_data):
             
             
             processed_data = weekly_breakdown(new_df)
-
+            print(processed_data)
             new_weekly_breakdown = processed_data['weekly_breakdown'].to_dict(orient='records')
             existing_data = load_processed_data()
             if existing_data:

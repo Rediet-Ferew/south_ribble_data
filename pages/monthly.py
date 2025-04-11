@@ -13,7 +13,7 @@ dash.register_page(__name__, path="/monthly", name="Monthly Data")
 
 
 PROCESSED_DATA_FILE = os.path.join(os.getcwd(), "assets", "monthly_output_data.json")
-
+FIRST_VISIT_DATES = os.path.join(os.getcwd(), "assets", "first_visits_string.json")
 
 def load_processed_data():
     if os.path.exists(PROCESSED_DATA_FILE):
@@ -78,16 +78,49 @@ def clean_and_merge_data(contents_list):
 
     return df_cleaned
 
-# Function to compute monthly breakdown & LTV
+
 def monthly_breakdown(df):
+    # Ensure job_date is datetime
     df['job_date'] = pd.to_datetime(df['job_date'], errors='coerce')
     df['month'] = df['job_date'].dt.to_period('M')
+    
+    # Load existing first visit data from JSON
+    if os.path.exists(FIRST_VISIT_DATES):
+        with open(FIRST_VISIT_DATES, 'r') as f:
+            first_visit_data = json.load(f)
+    else:
+        first_visit_data = []
 
-    first_visits = df.groupby('phone')['job_date'].min().reset_index()
-    first_visits.columns = ['phone', 'first_visit_date']
-    df = pd.merge(df, first_visits, on='phone')
+    # Convert existing JSON data into a dict for quick access
+    json_lookup = {
+        entry['phone'].strip(): pd.to_datetime(entry['first_visit_date'])
+        for entry in first_visit_data
+    }
+
+    new_entries = []
+
+    # Compute first visit per phone from DataFrame
+    phone_min_dates = df.groupby('phone')['job_date'].min().reset_index()
+    phone_min_dates.columns = ['phone', 'df_first_visit']
+
+    # Determine actual first visit date using JSON or fallback
+    def resolve_first_visit(row):
+        phone = row['phone'].strip()
+        if phone in json_lookup:
+            return json_lookup[phone]
+        else:
+            # Add to new entries to update JSON later
+            new_entries.append({
+                'phone': phone,
+                'first_visit_date': row['df_first_visit'].strftime('%Y-%m-%d')
+            })
+            return row['df_first_visit']
+
+    phone_min_dates['first_visit_date'] = phone_min_dates.apply(resolve_first_visit, axis=1)
+    df = pd.merge(df, phone_min_dates[['phone', 'first_visit_date']], on='phone', how='left')
     df['first_visit_month'] = df['first_visit_date'].dt.to_period('M')
 
+    # Monthly breakdown calculation
     monthly_results = []
     for month in sorted(df['month'].unique()):
         month_data = df[df['month'] == month]
@@ -101,7 +134,7 @@ def monthly_breakdown(df):
         month_revenue = month_data['price'].sum()
         new_revenue = month_data[month_data['month'] == month_data['first_visit_month']]['price'].sum()
         returning_revenue = month_revenue - new_revenue
-       
+
         monthly_results.append({
             'month': str(month),
             'total_customers': total_customers,
@@ -116,11 +149,7 @@ def monthly_breakdown(df):
 
     monthly_df = pd.DataFrame(monthly_results)
 
-    # Convert DataFrame to JSON serializable format
-   
-    monthly_dict = monthly_df.to_dict('records')
-
-    # LTV Calculations
+    # LTV calculations
     total_revenue = df['price'].sum()
     unique_customers = df['phone'].nunique()
     basic_ltv = total_revenue / unique_customers if unique_customers > 0 else 0
@@ -138,8 +167,14 @@ def monthly_breakdown(df):
 
     advanced_ltv = avg_purchase_value * avg_purchase_frequency * avg_customer_lifespan
 
+    # Append new entries to the JSON and save
+    if new_entries:
+        updated_json = first_visit_data + new_entries
+        with open(FIRST_VISIT_DATES, 'w') as f:
+            json.dump(updated_json, f, indent=4)
+
     return {
-        'monthly_breakdown': monthly_df,  # Convert DataFrame to JSON serializable format
+        'monthly_breakdown': monthly_df,
         'Basic LTV': basic_ltv,
         'Advanced LTV': advanced_ltv,
         'Average Purchase Value': avg_purchase_value,
