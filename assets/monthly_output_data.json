@@ -285,17 +285,6 @@
             "total_revenue": 94078.02,
             "new_customer_revenue": 17445.399999999998,
             "returning_customer_revenue": 76632.62000000001
-        },
-        {
-            "month": "2025-03",
-            "total_customers": 1537,
-            "new_customers": 290,
-            "returning_customers": 1247,
-            "new_percentage": 18.87,
-            "returning_percentage": 81.13,
-            "total_revenue": 36700.31,
-            "new_customer_revenue": 5642.1,
-            "returning_customer_revenue": 31058.21
         }
     ],
     "Basic LTV": 36.63053682037164,
