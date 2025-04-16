@@ -83,8 +83,8 @@ def weekly_breakdown(df):
     df['job_date'] = pd.to_datetime(df['job_date'], format=DATE_FORMAT, errors='coerce')
     df = df.sort_values('job_date')
 
-    # Filter out dates before first Monday (2023-01-02)
-    df = df[df['job_date'] >= pd.to_datetime('2023-01-03')]
+    # Filter out dates before first Monday (2022-01-03)
+    df = df[df['job_date'] >= pd.to_datetime('2022-01-03')]
 
     # Load existing first visit data
     if os.path.exists(FIRST_VISIT_DATES):
