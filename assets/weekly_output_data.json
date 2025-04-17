@@ -7,8 +7,8 @@
             "returning_customers": 0,
             "new_percentage": 100.0,
             "returning_percentage": 0.0,
-            "total_revenue": 16396.95,
-            "new_customer_revenue": 16396.95,
+            "total_revenue": 16396.949999999997,
+            "new_customer_revenue": 16396.949999999997,
             "returning_customer_revenue": 0.0
         },
         {
@@ -19,8 +19,8 @@
             "new_percentage": 69.0,
             "returning_percentage": 31.0,
             "total_revenue": 19084.4,
-            "new_customer_revenue": 11090.099999999999,
-            "returning_customer_revenue": 7994.300000000003
+            "new_customer_revenue": 11090.1,
+            "returning_customer_revenue": 7994.300000000001
         },
         {
             "week": "Jan 17, 2022 - Jan 23, 2022",
@@ -29,9 +29,9 @@
             "returning_customers": 555,
             "new_percentage": 56.74,
             "returning_percentage": 43.26,
-            "total_revenue": 19174.699999999997,
+            "total_revenue": 19174.7,
             "new_customer_revenue": 9138.0,
-            "returning_customer_revenue": 10036.699999999997
+            "returning_customer_revenue": 10036.7
         },
         {
             "week": "Jan 24, 2022 - Jan 30, 2022",
@@ -52,8 +52,8 @@
             "new_percentage": 48.11,
             "returning_percentage": 51.89,
             "total_revenue": 22409.6,
-            "new_customer_revenue": 9040.849999999999,
-            "returning_customer_revenue": 13368.75
+            "new_customer_revenue": 9040.85,
+            "returning_customer_revenue": 13368.749999999998
         },
         {
             "week": "Feb 07, 2022 - Feb 13, 2022",
@@ -85,8 +85,8 @@
             "new_percentage": 41.88,
             "returning_percentage": 58.12,
             "total_revenue": 26516.45,
-            "new_customer_revenue": 9123.4,
-            "returning_customer_revenue": 17393.050000000003
+            "new_customer_revenue": 9123.400000000001,
+            "returning_customer_revenue": 17393.05
         },
         {
             "week": "Feb 28, 2022 - Mar 06, 2022",
@@ -117,9 +117,9 @@
             "returning_customers": 1018,
             "new_percentage": 35.61,
             "returning_percentage": 64.39,
-            "total_revenue": 25365.05,
+            "total_revenue": 25365.049999999996,
             "new_customer_revenue": 7524.3,
-            "returning_customer_revenue": 17840.75
+            "returning_customer_revenue": 17840.749999999996
         },
         {
             "week": "Mar 21, 2022 - Mar 27, 2022",
@@ -162,7 +162,7 @@
             "new_percentage": 32.74,
             "returning_percentage": 67.26,
             "total_revenue": 29727.15,
-            "new_customer_revenue": 8445.900000000001,
+            "new_customer_revenue": 8445.9,
             "returning_customer_revenue": 21281.25
         },
         {
@@ -173,7 +173,7 @@
             "new_percentage": 31.36,
             "returning_percentage": 68.64,
             "total_revenue": 26099.25,
-            "new_customer_revenue": 6781.85,
+            "new_customer_revenue": 6781.849999999999,
             "returning_customer_revenue": 19317.4
         },
         {
@@ -183,9 +183,9 @@
             "returning_customers": 1235,
             "new_percentage": 31.54,
             "returning_percentage": 68.46,
-            "total_revenue": 30970.31,
+            "total_revenue": 30970.309999999998,
             "new_customer_revenue": 8682.65,
-            "returning_customer_revenue": 22287.660000000003
+            "returning_customer_revenue": 22287.659999999996
         },
         {
             "week": "May 02, 2022 - May 08, 2022",
@@ -195,7 +195,7 @@
             "new_percentage": 29.07,
             "returning_percentage": 70.93,
             "total_revenue": 29533.260000000002,
-            "new_customer_revenue": 8097.049999999999,
+            "new_customer_revenue": 8097.05,
             "returning_customer_revenue": 21436.210000000003
         },
         {
@@ -205,9 +205,9 @@
             "returning_customers": 1013,
             "new_percentage": 27.02,
             "returning_percentage": 72.98,
-            "total_revenue": 25603.699999999997,
-            "new_customer_revenue": 6302.200000000001,
-            "returning_customer_revenue": 19301.499999999996
+            "total_revenue": 25603.7,
+            "new_customer_revenue": 6302.2,
+            "returning_customer_revenue": 19301.5
         },
         {
             "week": "Jun 27, 2022 - Jul 03, 2022",
@@ -216,9 +216,9 @@
             "returning_customers": 785,
             "new_percentage": 32.21,
             "returning_percentage": 67.79,
-            "total_revenue": 18990.449999999997,
-            "new_customer_revenue": 6578.700000000001,
-            "returning_customer_revenue": 12411.749999999996
+            "total_revenue": 18990.45,
+            "new_customer_revenue": 6578.7,
+            "returning_customer_revenue": 12411.75
         },
         {
             "week": "Jul 11, 2022 - Jul 17, 2022",
@@ -249,9 +249,9 @@
             "returning_customers": 544,
             "new_percentage": 35.39,
             "returning_percentage": 64.61,
-            "total_revenue": 12786.45,
+            "total_revenue": 12786.449999999999,
             "new_customer_revenue": 4407.75,
-            "returning_customer_revenue": 8378.7
+            "returning_customer_revenue": 8378.699999999999
         },
         {
             "week": "Sep 26, 2022 - Oct 02, 2022",
@@ -272,7 +272,7 @@
             "new_percentage": 29.97,
             "returning_percentage": 70.03,
             "total_revenue": 28688.0,
-            "new_customer_revenue": 8182.849999999999,
+            "new_customer_revenue": 8182.85,
             "returning_customer_revenue": 20505.15
         },
         {
@@ -293,9 +293,9 @@
             "returning_customers": 689,
             "new_percentage": 20.44,
             "returning_percentage": 79.56,
-            "total_revenue": 16229.449999999999,
-            "new_customer_revenue": 3606.6,
-            "returning_customer_revenue": 12622.849999999999
+            "total_revenue": 16229.45,
+            "new_customer_revenue": 3606.6000000000004,
+            "returning_customer_revenue": 12622.85
         },
         {
             "week": "Oct 24, 2022 - Oct 30, 2022",
@@ -326,9 +326,9 @@
             "returning_customers": 1193,
             "new_percentage": 23.96,
             "returning_percentage": 76.04,
-            "total_revenue": 29065.8,
+            "total_revenue": 29065.800000000003,
             "new_customer_revenue": 7075.35,
-            "returning_customer_revenue": 21990.449999999997
+            "returning_customer_revenue": 21990.450000000004
         },
         {
             "week": "Nov 14, 2022 - Nov 20, 2022",
@@ -338,7 +338,7 @@
             "new_percentage": 24.52,
             "returning_percentage": 75.48,
             "total_revenue": 27534.8,
-            "new_customer_revenue": 5983.5,
+            "new_customer_revenue": 5983.499999999999,
             "returning_customer_revenue": 21551.3
         },
         {
@@ -349,7 +349,7 @@
             "new_percentage": 23.76,
             "returning_percentage": 76.24,
             "total_revenue": 31609.0,
-            "new_customer_revenue": 7133.6,
+            "new_customer_revenue": 7133.599999999999,
             "returning_customer_revenue": 24475.4
         },
         {
@@ -398,25 +398,25 @@
         },
         {
             "week": "Dec 26, 2022 - Jan 01, 2023",
-            "total_customers": 1751,
-            "new_customers": 399,
-            "returning_customers": 1352,
-            "new_percentage": 22.79,
-            "returning_percentage": 77.21,
-            "total_revenue": 32580.55,
-            "new_customer_revenue": 7488.950000000001,
-            "returning_customer_revenue": 25091.6
+            "total_customers": 2036,
+            "new_customers": 516,
+            "returning_customers": 1520,
+            "new_percentage": 25.34,
+            "returning_percentage": 74.66,
+            "total_revenue": 40771.05,
+            "new_customer_revenue": 10243.35,
+            "returning_customer_revenue": 30527.700000000004
         },
         {
             "week": "Jan 02, 2023 - Jan 08, 2023",
-            "total_customers": 1441,
-            "new_customers": 292,
-            "returning_customers": 1149,
-            "new_percentage": 20.26,
-            "returning_percentage": 79.74,
-            "total_revenue": 28237.25,
-            "new_customer_revenue": 5575.0,
-            "returning_customer_revenue": 22662.25
+            "total_customers": 1101,
+            "new_customers": 164,
+            "returning_customers": 937,
+            "new_percentage": 14.9,
+            "returning_percentage": 85.1,
+            "total_revenue": 20046.75,
+            "new_customer_revenue": 2807.7000000000003,
+            "returning_customer_revenue": 17239.05
         },
         {
             "week": "Jan 09, 2023 - Jan 15, 2023",
@@ -459,7 +459,7 @@
             "new_percentage": 16.7,
             "returning_percentage": 83.3,
             "total_revenue": 25812.75,
-            "new_customer_revenue": 4020.25,
+            "new_customer_revenue": 4020.2499999999995,
             "returning_customer_revenue": 21792.5
         },
         {
@@ -470,8 +470,8 @@
             "new_percentage": 18.41,
             "returning_percentage": 81.59,
             "total_revenue": 26908.55,
-            "new_customer_revenue": 5106.65,
-            "returning_customer_revenue": 21801.9
+            "new_customer_revenue": 5106.650000000001,
+            "returning_customer_revenue": 21801.899999999998
         },
         {
             "week": "Feb 13, 2023 - Feb 19, 2023",
@@ -531,13 +531,13 @@
         {
             "week": "Mar 20, 2023 - Mar 26, 2023",
             "total_customers": 1575,
-            "new_customers": 290,
-            "returning_customers": 1285,
-            "new_percentage": 18.41,
-            "returning_percentage": 81.59,
+            "new_customers": 289,
+            "returning_customers": 1286,
+            "new_percentage": 18.35,
+            "returning_percentage": 81.65,
             "total_revenue": 28356.15,
-            "new_customer_revenue": 4995.3,
-            "returning_customer_revenue": 23360.850000000002
+            "new_customer_revenue": 4990.799999999999,
+            "returning_customer_revenue": 23365.350000000002
         },
         {
             "week": "Mar 27, 2023 - Apr 02, 2023",
@@ -1649,6 +1649,61 @@
             "total_revenue": 23520.309999999998,
             "new_customer_revenue": 1799.0,
             "returning_customer_revenue": 21721.309999999998
+        },
+        {
+            "week": "Mar 03, 2025 - Mar 09, 2025",
+            "total_customers": 1132,
+            "new_customers": 432,
+            "returning_customers": 700,
+            "new_percentage": 38.16,
+            "returning_percentage": 61.84,
+            "total_revenue": 24233.1,
+            "new_customer_revenue": 10386.5,
+            "returning_customer_revenue": 13846.599999999999
+        },
+        {
+            "week": "Mar 10, 2025 - Mar 16, 2025",
+            "total_customers": 1099,
+            "new_customers": 181,
+            "returning_customers": 918,
+            "new_percentage": 16.47,
+            "returning_percentage": 83.53,
+            "total_revenue": 23507.91,
+            "new_customer_revenue": 3611.5999999999995,
+            "returning_customer_revenue": 19896.31
+        },
+        {
+            "week": "Mar 17, 2025 - Mar 23, 2025",
+            "total_customers": 1111,
+            "new_customers": 157,
+            "returning_customers": 954,
+            "new_percentage": 14.13,
+            "returning_percentage": 85.87,
+            "total_revenue": 24434.83,
+            "new_customer_revenue": 3587.1000000000004,
+            "returning_customer_revenue": 20847.730000000003
+        },
+        {
+            "week": "Mar 24, 2025 - Mar 30, 2025",
+            "total_customers": 1156,
+            "new_customers": 187,
+            "returning_customers": 969,
+            "new_percentage": 16.18,
+            "returning_percentage": 83.82,
+            "total_revenue": 26697.510000000002,
+            "new_customer_revenue": 3994.0,
+            "returning_customer_revenue": 22703.510000000002
+        },
+        {
+            "week": "Mar 31, 2025 - Apr 06, 2025",
+            "total_customers": 1134,
+            "new_customers": 186,
+            "returning_customers": 948,
+            "new_percentage": 16.4,
+            "returning_percentage": 83.6,
+            "total_revenue": 29215.23,
+            "new_customer_revenue": 5323.7,
+            "returning_customer_revenue": 23891.53
         }
     ]
 }
